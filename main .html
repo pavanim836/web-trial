@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Campus Navigator — Landing</title>
+  <meta name="description" content="Elegant dark-themed landing page for Campus Navigator — room availability, map & routing, events, AI assistant, search & filters, user roles." />
+  <style>
+    /* ---------- Theme tokens ---------- */
+    :root{
+      --bg:#060810;
+      --surface:#0b1220;
+      --muted:#9aa6b2;
+      --glass: rgba(255,255,255,0.03);
+      --accent:#06b6d4; /* cyan */
+      --accent-2:#7c3aed; /* purple */
+      --success:#10b981;
+      --danger:#ef4444;
+      --radius:12px;
+      --container:1200px;
+      --gap:18px;
+      --shadow:0 10px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg) 0%, #041024 100%);color:#e6eef6}
+    a{color:var(--accent)}
+
+    /* ---------- layout ---------- */
+    .container{max-width:var(--container);margin:0 auto;padding:32px}
+    header{padding:18px 0;position:relative}
+    .nav{display:flex;align-items:center;gap:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;color:#021720}
+    nav .links{display:flex;gap:8px;align-items:center;margin-left:22px}
+    .nav-btn{background:transparent;border:0;padding:8px 12px;border-radius:10px;color:inherit;font-weight:600;cursor:pointer}
+    .nav-cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 14px;border-radius:10px;color:#021720;font-weight:700}
+
+    /* ---------- hero ---------- */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;padding:48px 0}
+    .hero h1{font-size:40px;margin:0;line-height:1.02}
+    .hero p{color:var(--muted);margin-top:12px}
+    .hero .actions{display:flex;gap:12px;margin-top:20px}
+
+    /* ---------- feature cards ---------- */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.02)}
+    .card h3{margin:0 0 8px 0}
+    .muted{color:var(--muted);font-size:14px}
+
+    /* small UI elements inside cards */
+    .status{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+    .status.available{background:rgba(6,182,212,0.12);color:var(--accent)}
+    .status.occupied{background:rgba(239,68,68,0.08);color:var(--danger)}
+    .chip{display:inline-block;background:var(--glass);padding:6px 8px;border-radius:999px;font-size:13px}
+
+    /* ---------- map & routing ---------- */
+    .map{height:300px;border-radius:12px;background:linear-gradient(180deg,#021524,#031726);display:grid;place-items:center;color:var(--muted);position:relative;overflow:hidden}
+    .route-preview{position:absolute;left:16px;bottom:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:10px;border-radius:10px}
+
+    /* ---------- events list ---------- */
+    .events{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .event{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(124,58,237,0.06), rgba(255,255,255,0.01))}
+
+    /* ---------- assistant widget ---------- */
+    .assistant{position:fixed;right:28px;bottom:28px;width:360px;border-radius:14px;background:linear-gradient(180deg,#071726,#051019);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03);overflow:hidden}
+    .assistant .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+    .assistant .messages{height:260px;padding:12px;overflow:auto;border-top:1px solid rgba(255,255,255,0.01);border-bottom:1px solid rgba(255,255,255,0.01)}
+    .assistant .compose{display:flex;padding:10px;gap:8px}
+    .msg{max-width:78%;padding:8px 10px;border-radius:10px;margin-bottom:8px}
+    .msg.user{background:linear-gradient(90deg, rgba(6,182,212,0.12), rgba(124,58,237,0.06));align-self:flex-end}
+    .msg.bot{background:rgba(255,255,255,0.02)}
+
+    /* ---------- search & filters section ---------- */
+    .search-area{display:flex;gap:12px;align-items:center}
+    .search-area input, .search-area select{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:inherit;width:100%}
+
+    /* ---------- accounts & roles ---------- */
+    .roles{display:flex;gap:12px;align-items:center}
+    .role-btn{padding:8px 10px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+
+    /* ---------- responsive ---------- */
+    @media (max-width:1100px){
+      .hero{grid-template-columns:1fr}
+      .features{grid-template-columns:repeat(2,1fr)}
+      .events{grid-template-columns:1fr}
+      .assistant{right:12px;left:12px;width:unset}
+    }
+    @media (max-width:760px){
+      .features{grid-template-columns:1fr}
+      nav .links{display:none}
+      .map{height:220px}
+      .assistant{position:fixed;right:12px;bottom:12px;width:320px}
+    }
+
+    footer{padding:36px 0;color:var(--muted)}
+
+    /* subtle animations */
+    .fade-up{transform:translateY(6px);opacity:0;animation:fadeUp .6s ease forwards}
+    @keyframes fadeUp{to{transform:none;opacity:1}}
+
+    /* Section visibility */
+    section[data-content-section] {
+      display: none;
+    }
+    section[data-content-section].active {
+      display: block;
+      animation: fadeUp .6s ease forwards;
+    }
+    
+    .default-content {
+      display: block;
+    }
+    .default-content.hidden {
+      display: block;
+    }
+
+    /* Sign-in form styles */
+    .signin-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      place-items: center;
+      animation: fadeUp .3s ease forwards;
+    }
+    
+    .signin-modal.active {
+      display: grid;
+    }
+    
+    .signin-container {
+      background: linear-gradient(180deg, var(--surface), #0f1724);
+      border-radius: 14px;
+      padding: 40px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    
+    .signin-container h2 {
+      margin: 0 0 24px 0;
+      font-size: 28px;
+      text-align: center;
+      color: var(--accent);
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      font-weight: 600;
+      color: #e6eef6;
+      font-size: 14px;
+    }
+    
+    .form-group input {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 8px;
+      color: #e6eef6;
+      outline: none;
+      transition: border-color .3s ease;
+      font-size: 14px;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+    
+    .form-group input::placeholder {
+      color: var(--muted);
+    }
+    
+    .signin-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .signin-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+    
+    .signin-actions .submit-btn {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #021720;
+    }
+    
+    .signin-actions .submit-btn:hover {
+      opacity: 0.9;
+    }
+    
+    .signin-actions .cancel-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e6eef6;
+    }
+    
+    .signin-actions .cancel-btn:hover {
+      background: rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">CN</div>
+        <div>
+          <div style="font-weight:800">Campus Navigator</div>
+          <div class="muted" style="font-size:13px">Rooms • Routes • Events • AI</div>
+        </div>
+      </div>
+
+      <nav style="margin-left:auto">
+        <div class="links">
+          <button class="nav-btn" data-section="rooms">Live Rooms</button>
+          <button class="nav-btn" data-section="map">Map</button>
+          <button class="nav-btn" data-section="events">Events</button>
+          <button class="nav-btn" data-section="search">Search</button>
+          <button class="nav-cta" id="signinBtn">Sign in</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero default-content">
+      <div>
+        <h1 class="fade-up">Find free rooms, fastest routes, and campus events — instantly.</h1>
+        <p class="muted fade-up" style="animation-delay:.06s">Elegant, privacy-first campus navigator with live room availability, interactive routing, events hub and an AI assistant for quick natural-language queries.</p>
+        <div class="actions fade-up" style="animation-delay:.12s">
+          <button class="nav-cta">Get started — it's free</button>
+          <button class="nav-btn">View demo</button>
+        </div>
+
+        <!-- Quick Live status preview -->
+        <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap">
+          <div class="card" style="min-width:220px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">Library A — Study Hall</div>
+                <div class="muted" style="font-size:13px">Floor 1 • Capacity 40</div>
+              </div>
+              <div style="text-align:right">
+                <div class="status available">Available</div>
+                <div class="muted" style="font-size:13px;margin-top:6px">12 seats left • 1:44 hrs</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="min-width:220px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-weight:700">Lab C — Electronics</div>
+                <div class="muted" style="font-size:13px">Floor 2 • Equipment</div>
+              </div>
+              <div style="text-align:right">
+                <div class="status occupied">Occupied</div>
+                <div class="muted" style="font-size:13px;margin-top:6px">Ends in 42 mins</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right column: map preview + search -->
+      <aside>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-weight:700">Map & Routing</div>
+            <div class="chip">Shortest paths • Accessibility</div>
+          </div>
+          <div class="map" id="mapPreview">Interactive campus map preview
+            <div class="route-preview">Hostel → Library A • 7 min</div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <input id="fromInput" placeholder="Start (e.g. Hostel)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit">
+            <input id="toInput" placeholder="Destination (e.g. Library A)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit">
+            <button class="nav-btn" id="routeBtn">Go</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- FEATURES GRID -->
+    <section style="margin-top:28px" data-content-section="rooms" class="default-content">
+      <div style="display:flex;justify-content:space-between;align-items:end">
+        <h2 style="margin:0">Core features</h2>
+        <div class="muted">MVP → v1 roadmap</div>
+      </div>
+
+      <div class="features" style="margin-top:12px">
+        <div class="card">
+          <h3>1. Live Room Availability</h3>
+          <div class="muted">Free/occupied labels, time windows, capacity, quick reserve action.</div>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div style="min-width:120px">
+              <div style="font-weight:700">Library A</div>
+              <div class="muted">12 seats • Floor 1</div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div class="status available">Available</div>
+              <div class="muted" style="font-size:13px;margin-top:6px">Reserve for 2:00–3:00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>2. Interactive Campus Map & Routing</h3>
+          <div class="muted">Block-level map, shortest path, walking times and accessibility options.</div>
+          <div style="margin-top:12px"><small class="muted">Click 'Go' in the map box to compute a mock route.</small></div>
+        </div>
+
+        <div class="card">
+          <h3>3. Events & Announcements Hub</h3>
+          <div class="muted">Event calendar, RSVP, pinned announcements, club filters.</div>
+          <div style="margin-top:12px">
+            <div class="event">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><strong>Robotics Demo</strong><div class="muted">Today • 5:00 PM — Lab B</div></div>
+                <div><button class="nav-btn">RSVP</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>4. AI Chat Assistant</h3>
+          <div class="muted">Natural-language queries, suggested prompts, fallback search.</div>
+          <div style="margin-top:12px"><small class="muted">Open the assistant bubble at bottom-right to try a demo.</small></div>
+        </div>
+
+        <div class="card">
+          <h3>5. Search & Filters</h3>
+          <div class="muted">Global search, time filters, block & room-type facets.</div>
+          <div style="margin-top:12px" class="search-area">
+            <input id="globalSearch" placeholder="Search rooms, events, blocks...">
+            <select id="timeFilter"><option>Now</option><option>Today</option><option>This week</option></select>
+            <button class="nav-btn" id="searchBtn">Search</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>6. User Accounts & Roles</h3>
+          <div class="muted">Student / Faculty / Admin; favorites, push preferences, bookings.</div>
+          <div style="margin-top:12px" class="roles">
+            <button class="role-btn">Student</button>
+            <button class="role-btn">Faculty</button>
+            <button class="role-btn">Admin</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events & Announcements -->
+    <section style="margin-top:28px" data-content-section="events">
+      <h2 style="margin-bottom:8px">Upcoming events</h2>
+      <div class="events">
+        <div class="event card">
+          <div style="display:flex;justify-content:space-between"><strong>AI Workshop</strong><span class="chip">Club: ML</span></div>
+          <div class="muted">Dec 05 • 3:00 PM • Auditorium</div>
+          <div style="display:flex;gap:8px;margin-top:8px"><button class="nav-btn">RSVP</button><button class="nav-btn">Add to calendar</button></div>
+        </div>
+
+        <div class="event card">
+          <div style="display:flex;justify-content:space-between"><strong>Art & Doodling</strong><span class="chip">Club: Arts</span></div>
+          <div class="muted">Dec 06 • 11:00 AM • Room C2</div>
+          <div style="display:flex;gap:8px;margin-top:8px"><button class="nav-btn">RSVP</button><button class="nav-btn">Add to calendar</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map & Routing -->
+    <section style="margin-top:28px" data-content-section="map">
+      <h2 style="margin-bottom:8px">Map & Routing</h2>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-weight:700">Campus Map</div>
+          <div class="chip">Shortest paths • Accessibility</div>
+        </div>
+        <div class="map" id="mapPreview">Interactive campus map preview
+          <div class="route-preview">Hostel → Library A • 7 min</div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <input id="fromInput" placeholder="Start (e.g. Hostel)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit">
+          <input id="toInput" placeholder="Destination (e.g. Library A)" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit">
+          <button class="nav-btn" id="routeBtn">Go</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filters -->
+    <section style="margin-top:28px" data-content-section="search">
+      <h2 style="margin-bottom:8px">Search & Filters</h2>
+      <div class="card">
+        <div class="search-area">
+          <input id="globalSearch" placeholder="Search rooms, events, blocks..." style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit;flex:1">
+          <select id="timeFilter" style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:inherit;cursor:pointer;min-width:120px"><option>Now</option><option>Today</option><option>This week</option></select>
+          <button class="nav-btn" id="searchBtn">Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign-in Modal -->
+    <div class="signin-modal" id="signinModal">
+      <div class="signin-container">
+        <h2>Sign In</h2>
+        <form id="signinForm">
+          <div class="form-group">
+            <label for="nameInput">Full Name</label>
+            <input id="nameInput" type="text" placeholder="Enter your full name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="regInput">Register Number</label>
+            <input id="regInput" type="text" placeholder="Enter your register number" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="emailInput">Email ID</label>
+            <input id="emailInput" type="email" placeholder="Enter your email" required>
+          </div>
+          
+          <div class="signin-actions">
+            <button type="submit" class="submit-btn">Sign In</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer style="margin-top:36px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+        <div>
+          <strong>Campus Navigator</strong>
+          <div class="muted">Built for students • Privacy-first • Dark elegant UI</div>
+        </div>
+        <div class="muted">© <span id="year"></span> Campus Navigator</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Assistant widget (demo) -->
+  <div class="assistant" id="assistant">
+    <div class="head">
+      <div style="display:flex;gap:10px;align-items:center"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;color:#021720">AI</div><div><strong>Campus Assistant</strong><div class="muted" style="font-size:12px">Ask: "Which rooms free now?"</div></div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="nav-btn" id="minimize">_</button>
+        <button class="nav-btn" id="closeAssist">×</button>
+      </div>
+    </div>
+    <div class="messages" id="messages">
+      <div class="msg bot">Hi — I can help find free rooms, nearby routes, or events. Try: "Show study spaces near me"</div>
+    </div>
+    <div class="compose">
+      <input id="assistantInput" placeholder='Ask e.g. "Which rooms free now in Block C?"' style="flex:1;background:transparent;border:0;color:inherit;outline:none">
+      <button class="nav-btn" id="sendBtn">Ask</button>
+    </div>
+  </div>
+
+  <script>
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Map routing mock
+    document.getElementById('routeBtn').addEventListener('click', ()=>{
+      const from = document.getElementById('fromInput').value || 'Hostel';
+      const to = document.getElementById('toInput').value || 'Library A';
+      const map = document.getElementById('mapPreview');
+      map.innerHTML = '<div style="text-align:center">Routing: <strong>'+from+'</strong> → <strong>'+to+'</strong><div class="muted" style="margin-top:8px">Estimated: 7 min walk • Accessible route available</div></div>';
+    });
+
+    // Global search mock
+    document.getElementById('searchBtn').addEventListener('click', ()=>{
+      const q = document.getElementById('globalSearch').value || 'library';
+      alert('Searching for: '+q+' (hook to backend search)');
+    });
+
+    // Assistant behavior (mock)
+    const messagesEl = document.getElementById('messages');
+    document.getElementById('sendBtn').addEventListener('click', sendQuery);
+    document.getElementById('assistantInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendQuery(); });
+
+    function sendQuery(){
+      const txt = document.getElementById('assistantInput').value.trim();
+      if(!txt) return;
+      const userMsg = document.createElement('div'); userMsg.className='msg user'; userMsg.textContent = txt; messagesEl.appendChild(userMsg);
+      document.getElementById('assistantInput').value=''; messagesEl.scrollTop = messagesEl.scrollHeight;
+      // mock response
+      const bot = document.createElement('div'); bot.className='msg bot'; bot.textContent = 'Searching...'; messagesEl.appendChild(bot); messagesEl.scrollTop = messagesEl.scrollHeight;
+      setTimeout(()=>{
+        bot.textContent = 'Library A (Floor 1) — 12 seats free. Lab C occupied. Events today: Robotics Demo at 5 PM.';
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      },700);
+    }
+
+    // Assistant close / minimize
+    document.getElementById('closeAssist').addEventListener('click', ()=>{ document.getElementById('assistant').style.display='none'; });
+    document.getElementById('minimize').addEventListener('click', ()=>{
+      const a = document.getElementById('assistant');
+      if(a.style.height && a.style.height!=='0px'){ a.style.height='44px'; a.querySelector('.messages').style.display='none'; a.querySelector('.compose').style.display='none'; }
+      else{ a.style.height='auto'; a.querySelector('.messages').style.display='block'; a.querySelector('.compose').style.display='flex'; }
+    });
+
+    // Role buttons (toggle active)
+    document.querySelectorAll('.role-btn').forEach(b=>{
+      b.addEventListener('click', ()=>{ document.querySelectorAll('.role-btn').forEach(x=>x.style.borderColor='rgba(255,255,255,0.03)'); b.style.borderColor='rgba(6,182,212,0.2)'; });
+    });
+
+    // Sign-in modal functionality
+    const signinBtn = document.getElementById('signinBtn');
+    const signinModal = document.getElementById('signinModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const signinForm = document.getElementById('signinForm');
+
+    signinBtn.addEventListener('click', ()=>{
+      signinModal.classList.add('active');
+    });
+
+    cancelBtn.addEventListener('click', ()=>{
+      signinModal.classList.remove('active');
+      signinForm.reset();
+    });
+
+    signinModal.addEventListener('click', (e)=>{
+      if(e.target === signinModal) {
+        signinModal.classList.remove('active');
+        signinForm.reset();
+      }
+    });
+
+    signinForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value;
+      const regNum = document.getElementById('regInput').value;
+      const email = document.getElementById('emailInput').value;
+      alert('Sign In Successful!\n\nName: '+name+'\nRegister Number: '+regNum+'\nEmail: '+email);
+      signinModal.classList.remove('active');
+      signinForm.reset();
+    });
+
+    // Navbar section navigation
+    document.querySelectorAll('[data-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sectionId = btn.getAttribute('data-section');
+        
+        // Toggle the selected section
+        const activeSection = document.querySelector(`section[data-content-section="${sectionId}"]`);
+        if(activeSection) {
+          const isActive = activeSection.classList.contains('active');
+          
+          // Hide all content sections
+          document.querySelectorAll('section[data-content-section]').forEach(s => {
+            s.classList.remove('active');
+          });
+          
+          // Show the selected section if it wasn't active
+          if(!isActive) {
+            activeSection.classList.add('active');
+            activeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
